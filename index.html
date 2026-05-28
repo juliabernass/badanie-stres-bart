@@ -1,143 +1,78 @@
 <!doctype html>
 <html lang="pl">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Eksperyment stres-BART</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-:root{--bg:#f7f6f2;--surface:#fff;--surface-2:#f3f0ec;--text:#26231d;--muted:#6f6b64;--border:#d9d4cc;--primary:#0b6b72;--primary-2:#0f4d52;--danger:#9a2d3c;--ok:#2f6b3c;--shadow:0 10px 30px rgba(20,20,20,.08);--radius:18px}
-*{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.wrap{max-width:980px;margin:0 auto;padding:24px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px}
-h1,h2,h3{margin:0 0 12px;line-height:1.15}
-p{line-height:1.6}
-.muted{color:var(--muted)}
-.row{display:flex;gap:16px;flex-wrap:wrap}
-.row>*{flex:1 1 260px}
-label{display:block;font-weight:600;margin:14px 0 8px}
-input[type=text],input[type=number],select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;font:inherit}
-button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;background:var(--primary);color:#fff}
-button.secondary{background:#ece8e1;color:var(--text)}
-button.danger{background:var(--danger)}
-button:disabled{opacity:.5;cursor:not-allowed}
-.actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
-.question{padding:16px 0;border-top:1px solid #eee7df}
-.question:first-child{border-top:0}
-.scale{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-.scale label{margin:0;font-weight:500}
-.radioBox{display:flex;align-items:center;gap:6px;background:var(--surface-2);padding:10px 12px;border-radius:12px}
-.progress{height:12px;background:#e8e2d9;border-radius:999px;overflow:hidden;margin:18px 0 8px}
-.bar{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#5aa8ae)}
-.big{font-size:clamp(28px,5vw,54px);font-weight:700;letter-spacing:-.03em;margin:8px 0 18px}
-.timer{font-size:18px;font-weight:700;color:var(--danger)}
-.feedback{min-height:34px;font-weight:700;margin-top:16px}
-.taskBox{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;background:linear-gradient(180deg,#fdfcf9,#f5f1eb);border:1px solid var(--border);border-radius:18px;padding:24px}
-.sliderWrap{margin:24px 0}
-input[type=range]{width:100%}
-.sliderLabels{display:flex;justify-content:space-between;color:var(--muted);font-size:14px}
-.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#e8f1f2;color:var(--primary-2);font-size:13px;font-weight:600}
-.bartArea{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:start}
-.balloonStage{min-height:420px;display:flex;align-items:center;justify-content:center;background:#f9f7f3;border:1px solid var(--border);border-radius:18px;position:relative;overflow:hidden}
-.balloon{width:120px;height:150px;background:#d95865;border-radius:50% 50% 48% 48%;position:relative;transform-origin:center bottom;transition:transform .15s ease;box-shadow:inset -12px -18px 0 rgba(0,0,0,.07)}
-.balloon::after{content:'';position:absolute;left:50%;bottom:-34px;width:2px;height:34px;background:#8a8175;transform:translateX(-50%)}
-.balloon::before{content:'';position:absolute;top:22px;left:24px;width:22px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);transform:rotate(18deg)}
-.pop{background:radial-gradient(circle,#6a1b24 0,#aa3948 30%,transparent 31%);width:180px;height:180px;border-radius:50%}
-.stats{display:grid;gap:12px}
-.stat{padding:14px;background:var(--surface-2);border-radius:14px}
-.bartButtons{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
-.small{font-size:14px}
-.good{color:var(--ok)}
-.bad{color:var(--danger)}
-@media(max-width:800px){.bartArea{grid-template-columns:1fr}.wrap{padding:14px}.card{padding:18px}}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Eksperyment stres–BART</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --bg:#f7f6f2; --surface:#fff; --surface-2:#f3f0ec; --text:#26231d; --muted:#6f6b64; --border:#d9d4cc; --primary:#0b6b72; --primary-2:#0f4d52; --danger:#9a2d3c; --ok:#2f6b3c; --shadow:0 10px 30px rgba(20,20,20,.08); --radius:18px; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:Inter,system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+    .wrap { max-width:980px; margin:0 auto; padding:24px; }
+    .card { background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px; }
+    h1,h2,h3 { margin:0 0 12px; line-height:1.15; } p { line-height:1.6; } .muted { color:var(--muted); }
+    .row { display:flex; gap:16px; flex-wrap:wrap; } .row > * { flex:1 1 260px; }
+    label { display:block; font-weight:600; margin:14px 0 8px; }
+    input[type="text"], input[type="number"], select { width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border); background:#fff; font:inherit; }
+    button { border:0; border-radius:14px; padding:12px 18px; font:inherit; font-weight:600; cursor:pointer; background:var(--primary); color:white; }
+    button.secondary { background:#ece8e1; color:var(--text); } button.danger { background:var(--danger); } button:disabled { opacity:.5; cursor:not-allowed; }
+    .actions { display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; }
+    .question { padding:16px 0; border-top:1px solid #eee7df; } .question:first-child { border-top:0; }
+    .scale { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; } .scale label { margin:0; font-weight:500; }
+    .radioBox { display:flex; align-items:center; gap:6px; background:var(--surface-2); padding:10px 12px; border-radius:12px; }
+    .progress { height:12px; background:#e8e2d9; border-radius:999px; overflow:hidden; margin:18px 0 8px; } .bar { height:100%; width:0%; background:linear-gradient(90deg,var(--primary),#5aa8ae); }
+    .big { font-size:clamp(28px,5vw,54px); font-weight:700; letter-spacing:-.03em; margin:8px 0 18px; }
+    .timer { font-size:18px; font-weight:700; color:var(--danger); } .feedback { min-height:34px; font-weight:700; margin-top:16px; }
+    .taskBox { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:240px; background:linear-gradient(180deg,#fdfcf9,#f5f1eb); border:1px solid var(--border); border-radius:18px; padding:24px; }
+    .sliderWrap { margin:24px 0; } input[type="range"] { width:100%; } .sliderLabels { display:flex; justify-content:space-between; color:var(--muted); font-size:14px; }
+    .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:#e8f1f2; color:var(--primary-2); font-size:13px; font-weight:600; }
+    .bartArea { display:grid; grid-template-columns:1.2fr .8fr; gap:20px; align-items:start; }
+    .balloonStage { min-height:420px; display:flex; align-items:center; justify-content:center; background:#f9f7f3; border:1px solid var(--border); border-radius:18px; position:relative; overflow:hidden; }
+    .balloon { width:120px; height:150px; background:#d95865; border-radius:50% 50% 48% 48%; position:relative; transform-origin:center bottom; transition:transform .15s ease; box-shadow: inset -12px -18px 0 rgba(0,0,0,.07); }
+    .balloon::after { content:""; position:absolute; left:50%; bottom:-34px; width:2px; height:34px; background:#8a8175; transform:translateX(-50%); }
+    .balloon::before { content:""; position:absolute; top:22px; left:24px; width:22px; height:34px; border-radius:50%; background:rgba(255,255,255,.25); transform:rotate(18deg); }
+    .pop { background:radial-gradient(circle,#6a1b24 0,#aa3948 30%,transparent 31%); width:180px; height:180px; border-radius:50%; }
+    .stats { display:grid; gap:12px; } .stat { padding:14px; background:var(--surface-2); border-radius:14px; }
+    .bartButtons { display:flex; gap:12px; margin-top:16px; flex-wrap:wrap; } .small { font-size:14px; } .good { color:var(--ok); } .bad { color:var(--danger); }
+    @media (max-width:800px){ .bartArea{ grid-template-columns:1fr; } .wrap{ padding:14px; } .card{ padding:18px; } }
+  </style>
 </head>
 <body>
-<div class="wrap"><div id="app" class="card"></div></div>
+  <div class="wrap"><div id="app" class="card"></div></div>
 <script>
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTkXRn4Z87wKn8Sh0L8oJhAyVQMl2-uhk-PupWxp9uhDx14559tChwBSFWIg_PsUsIPg/exec';
 const app = document.getElementById('app');
-const PANAS_ITEMS = ['Zainteresowany/a','Rozdrażniony/a','Podekscytowany/a','Przygnębiony/a','Silny/a','Winny/a','Przestraszony/a','Wrogi/a','Entuzjastyczny/a','Dumny/a'];
+const PANAS_ITEMS = ['Zainteresowana/y','Rozdrażniona/y','Podekscytowana/y','Przygnębiona/y','Silna/y','Winna/y','Przestraszona/y','Wroga/i','Entuzjastyczna/y','Dumna/y'];
 const SNS_ITEMS = ['Jak dobrze radzisz sobie zwykle z ułamkami?','Jak dobrze radzisz sobie zwykle z procentami?','Jak dobrze radzisz sobie z obliczaniem napiwku lub rabatu?','Na ile wolisz informacje podane liczbowo niż opisowo?','Na ile czujesz się pewnie, interpretując tabele i wykresy?','Jak oceniasz swoją ogólną biegłość numeryczną?'];
-const state = {
-  participantId: 'P' + Date.now() + '_' + Math.floor(Math.random()*9000+1000),
-  age:'', gender:'',
-  condition: Math.random()<0.5 ? 'stres' : 'kontrola',
-  startedAt: new Date().toISOString(),
-  panas:{}, sns:{}, stressTaskTrials:[], vasStress:null,
-  bartTrials:[], bartRiskRatings:[],
-  currentBalloon:0, totalEarnings:0, currentPumps:0,
-  currentPotential:0, balloonExplodeAt:null, decisionStart:null
-};
-
-function saveToServer() {
-  const payload = {
-    participantId: state.participantId,
-    summary: buildSummaryCSV(),
-    trials: buildTrialsCSV()
-  };
-  app.innerHTML = '<h2>Zapisywanie danych...</h2><p>Proszę czekać, nie zamykaj okna.</p>';
-  fetch(SCRIPT_URL, {
-    method:'POST',
-    mode:'no-cors',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(payload)
-  }).then(() => {
-    app.innerHTML = '<h2>Dziękujemy za udział!</h2><p>Twoje odpowiedzi zostały zapisane. Możesz teraz zamknąć tę stronę.</p><p class="muted small">ID sesji: ' + state.participantId + '</p>';
-  }).catch(() => {
-    app.innerHTML = '<h2>Dziękujemy za udział!</h2><p>Twoje odpowiedzi zostały zapisane. Możesz teraz zamknąć tę stronę.</p><p class="muted small">ID sesji: ' + state.participantId + '</p>';
-  });
+const state = { participantId:'', age:'', gender:'', condition: Math.random()<0.5 ? 'stres':'kontrola', startedAt:new Date().toISOString(), panas:{}, sns:{}, stressTaskTrials:[], vasStress:null, bartTrials:[], bartRiskRatings:[], currentBalloon:0, totalEarnings:0, currentPumps:0, currentPotential:0, balloonExplodeAt:null, decisionStart:null };
+function download(filename, content, type='text/plain;charset=utf-8'){ const blob=new Blob([content],{type}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);} 
+function mean(arr){ return arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : 0; }
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function renderWelcome(){ app.innerHTML=`<span class="pill">Badanie naukowe</span><h1>Wpływ stresu na percepcję prawdopodobieństwa i decyzje hazardowe</h1><p class="muted">Prosimy o wypełnienie kilku kwestionariuszy i wykonanie dwóch krótkich zadań.</p><div class="row"><div>abel for="age">Wiek</label><input id="age" type="number" min="18" max="99" placeholder="np. 23" /></div><div>abel for="gender">Płeć</label><select id="gender"><option value="">Wybierz</option><option>Kobieta</option><option>Mężczyzna</option><option>Inna</option><option>Nie chcę podawać</option></select></div></div><div class="actions"><button id="startBtn">Rozpocznij</button></div>`; document.getElementById('startBtn').onclick=()=>{ const age=document.getElementById('age').value.trim(); const gender=document.getElementById('gender').value; if(!age||!gender||gender==='Wybierz'){alert('Uzupełnij wiek i płeć.');return;} state.participantId='P'+Date.now()+'_'+Math.floor(Math.random()*9000+1000); state.age=age; state.gender=gender; renderPANAS(); }; }
+function renderLikertPage(title, items, min, max, nextFn, targetKey, anchors=['Wcale','Bardzo']){ app.innerHTML=`<h2>${esc(title)}</h2><p class="muted">Oceń każdą pozycję w skali ${min}-${max}. Wszystkie odpowiedzi są wymagane.</p><div id="questions"></div><div class="actions"><button id="nextBtn">Dalej</button></div>`; const q=document.getElementById('questions'); items.forEach((item,idx)=>{ const div=document.createElement('div'); div.className='question'; let radios=''; for(let i=min;i<=max;i++){ radios += `<label class="radioBox"><input type="radio" name="q${idx}" value="${i}"> ${i}</label>`; } div.innerHTML=`<div><strong>${idx+1}.</strong> ${esc(item)}</div><div class="small muted" style="margin-top:6px">${anchors[0]} - ${anchors[1]}</div><div class="scale">${radios}</div>`; q.appendChild(div); }); document.getElementById('nextBtn').onclick=()=>{ const ans={}; for(let i=0;i<items.length;i++){ const checked=document.querySelector(`input[name="q${i}"]:checked`); if(!checked){ alert('Uzupełnij wszystkie odpowiedzi.'); return; } ans[`item_${i+1}`]=Number(checked.value); } state[targetKey]=ans; nextFn(); }; }
+function renderPANAS(){ renderLikertPage('Skala PANAS', PANAS_ITEMS, 1, 5, renderSNS, 'panas', ['Bardzo słabo','Bardzo silnie']); }
+function renderSNS(){ renderLikertPage('Skala SNS', SNS_ITEMS, 1, 6, renderManipulationIntro, 'sns', ['Nisko','Wysoko']); }
+function renderManipulationIntro(){ const txt=state.condition==='stres' ? 'Za chwilę wykonasz krótkie zadanie arytmetyczne pod presją czasu. Staraj się odpowiadać szybko i dokładnie.' : 'Za chwilę wykonasz krótkie neutralne zadanie porządkowania. Wykonuj je spokojnie i możliwie dokładnie.'; app.innerHTML=`<span class="pill">Warunek: ${state.condition}</span><h2>Zadanie wprowadzające</h2><p>${txt}</p><div class="actions"><button id="goManip">Start zadania</button></div>`; document.getElementById('goManip').onclick=()=>runManipulation(0); }
+function randomInt(a,b){ return Math.floor(Math.random()*(b-a+1))+a; }
+function runManipulation(index){ const total=8; if(index>=total){ renderVASStress(); return; } if(state.condition==='stres'){ const a=randomInt(13,58), b=randomInt(7,29), op=Math.random()<.5?'+':'-'; const correct=op==='+'?a+b:a-b; const start=performance.now(); let timeLeft=6; app.innerHTML=`<h2>Zadanie matematyczne</h2><div class="progress"><div class="bar" style="width:${(index/total)*100}%"></div></div><p class="muted">Próba ${index+1} z ${total}</p><div class="taskBox"><div class="timer" id="timer">Pozostały czas: ${timeLeft.toFixed(1)} s</div><div class="big">${a} ${op} ${b} = ?</div><input id="answer" type="number" inputmode="numeric" style="max-width:220px;text-align:center;font-size:28px;font-weight:700"><div class="feedback" id="feedback"></div><div class="actions"><button id="submitAnswer">Zatwierdź</button></div></div>`; const input=document.getElementById('answer'); input.focus(); let done=false; const timerEl=document.getElementById('timer'); const tick=setInterval(()=>{ timeLeft-=0.1; timerEl.textContent=`Pozostały czas: ${Math.max(0,timeLeft).toFixed(1)} s`; if(timeLeft<=0 && !done){ finish(null,true); } },100); function finish(value, timeout=false){ if(done) return; done=true; clearInterval(tick); const rt=Math.round(performance.now()-start); const isCorrect=value!==null && Number(value)===correct; let feedback=''; if(timeout){ feedback='Za wolno. Twój wynik jest poniżej przeciętnej.'; } else if(isCorrect){ feedback='Poprawnie, ale postaraj się odpowiadać szybciej.'; } else { feedback='Niepoprawnie. Jesteś wolniejsza/y niż większość osób.'; } state.stressTaskTrials.push({phase:'stress_math', trial:index+1, stimulus:`${a}${op}${b}`, correct_answer:correct, response:value ?? '', correct:isCorrect?1:0, rt_ms:rt, timeout:timeout?1:0, feedback}); document.getElementById('feedback').textContent=feedback + ' (audio tykania można dodać w kolejnej wersji)'; setTimeout(()=>runManipulation(index+1),1200); } document.getElementById('submitAnswer').onclick=()=>finish(input.value,false); input.addEventListener('keydown',e=>{ if(e.key==='Enter') finish(input.value,false); }); } else { const letters=['K','A','T','R']; const shuffled=[...letters].sort(()=>Math.random()-.5); const correct=[...shuffled].sort().join(''); const start=performance.now(); app.innerHTML=`<h2>Zadanie neutralne</h2><div class="progress"><div class="bar" style="width:${(index/total)*100}%"></div></div><p class="muted">Próba ${index+1} z ${total}</p><div class="taskBox"><p>Ułóż litery alfabetycznie.</p><div class="big">${shuffled.join('  ')}</div><input id="answer" type="text" style="max-width:220px;text-align:center;font-size:28px;font-weight:700;text-transform:uppercase"><div class="feedback" id="feedback"></div><div class="actions"><button id="submitAnswer">Zatwierdź</button></div></div>`; const input=document.getElementById('answer'); input.focus(); function finish(){ const rt=Math.round(performance.now()-start); const value=input.value.toUpperCase().replace(/\s+/g,''); const isCorrect=value===correct; state.stressTaskTrials.push({phase:'control_sort', trial:index+1, stimulus:shuffled.join(''), correct_answer:correct, response:value, correct:isCorrect?1:0, rt_ms:rt, timeout:0, feedback:'neutral'}); setTimeout(()=>runManipulation(index+1),300); } document.getElementById('submitAnswer').onclick=finish; input.addEventListener('keydown',e=>{ if(e.key==='Enter') finish(); }); } }
+function renderVASStress(){ app.innerHTML=`<h2>Ocena stresu po zadaniu</h2><p>Proszę oceń, jak silny stres odczuwasz w tej chwili, po wykonaniu poprzedniego zadania.</p><div class="sliderWrap"><label for="stressRange">Poziom stresu: <span id="stressVal">50</span></label><input id="stressRange" type="range" min="0" max="100" value="50"><div class="sliderLabels"><span>0 - brak stresu</span><span>100 - maksymalny stres</span></div></div><div class="actions"><button id="toBart">Przejdź do zadania BART</button></div>`; const range=document.getElementById('stressRange'); const val=document.getElementById('stressVal'); range.oninput=()=>val.textContent=range.value; document.getElementById('toBart').onclick=()=>{ state.vasStress=Number(range.value); startBartIntro(); }; }
+function startBartIntro(){ app.innerHTML=`<h2>Zadanie BART</h2><p>Przed Tobą 30 balonów. Każde kliknięcie <strong>Pompuj</strong> zwiększa możliwą wygraną, ale też ryzyko pęknięcia balonu. Możesz w dowolnym momencie kliknąć <strong>Zbierz punkty</strong>.</p><p class="muted">W wybranych rundach przed rozpoczęciem pompowania poprosimy Cię jeszcze o ocenę, jak ryzykowny wydaje Ci się kolejny krok.</p><div class="actions"><button id="startBart">Start BART</button></div>`; document.getElementById('startBart').onclick=()=>nextBalloon(); }
+function nextBalloon(){ state.currentBalloon += 1; if(state.currentBalloon>30){ renderDebrief(); return; } state.currentPumps=0; state.currentPotential=0; state.balloonExplodeAt=randomInt(1,128); if([1,6,11,16,21,26].includes(state.currentBalloon)) renderRiskRating(); else renderBartTrial(false); }
+function renderRiskRating(){ app.innerHTML=`<h2>Ocena ryzyka przed rundą ${state.currentBalloon}</h2><p>Jak bardzo ryzykowny wydaje Ci się kolejny krok w tej rundzie?</p><div class="sliderWrap"><label for="riskRange">Ocena ryzyka: <span id="riskVal">50</span></label><input id="riskRange" type="range" min="0" max="100" value="50"><div class="sliderLabels"><span>0 - wcale nie ryzykowny</span><span>100 - bardzo ryzykowny</span></div></div><div class="actions"><button id="saveRisk">Dalej</button></div>`; const range=document.getElementById('riskRange'); const val=document.getElementById('riskVal'); range.oninput=()=>val.textContent=range.value; document.getElementById('saveRisk').onclick=()=>{ state.bartRiskRatings.push({round:state.currentBalloon, rating:Number(range.value), timestamp:new Date().toISOString()}); renderBartTrial(true); }; }
+function renderBartTrial(hadRiskRating){ state.decisionStart=performance.now(); const scale=1+state.currentPumps*0.03; app.innerHTML=`<div class="bartArea"><div><h2>Balon ${state.currentBalloon} / 30</h2><div class="balloonStage"><div id="balloonShape" class="balloon" style="transform: scale(${scale})"></div></div><div class="bartButtons"><button id="pumpBtn">Pompuj</button><button id="collectBtn" class="secondary">Zbierz punkty</button></div><p id="bartMsg" class="small muted" style="margin-top:14px">Kliknij jedną z opcji.</p></div><div class="stats"><div class="stat"><strong>Aktualna runda</strong><br>Potencjalny zysk: <span id="potential">${state.currentPotential.toFixed(2)}</span></div><div class="stat"><strong>Pompnięcia</strong><br><span id="pumps">${state.currentPumps}</span></div><div class="stat"><strong>Suma punktów</strong><br><span id="earnings">${state.totalEarnings.toFixed(2)}</span></div><div class="stat"><strong>Ocena ryzyka</strong><br>${hadRiskRating ? 'zebrana przed rundą' : 'brak w tej rundzie'}</div></div></div>`; document.getElementById('pumpBtn').onclick=pumpBalloon; document.getElementById('collectBtn').onclick=collectBalloon; }
+function pumpBalloon(){ state.currentPumps += 1; state.currentPotential += 0.05; document.getElementById('potential').textContent=state.currentPotential.toFixed(2); document.getElementById('pumps').textContent=state.currentPumps; document.getElementById('balloonShape').style.transform=`scale(${1 + state.currentPumps*0.03})`; if(state.currentPumps >= state.balloonExplodeAt){ const rt=Math.round(performance.now()-state.decisionStart); state.bartTrials.push({ round:state.currentBalloon, pumps:state.currentPumps, exploded:1, collected:0, round_earnings:0, total_earnings_after:Number(state.totalEarnings.toFixed(2)), first_decision_rt_ms:rt, explosion_point:state.balloonExplodeAt }); document.getElementById('balloonShape').className='pop'; document.getElementById('bartMsg').innerHTML='<span class="bad">Balon pękł. Punkty z tej rundy przepadły.</span>'; document.getElementById('pumpBtn').disabled=true; document.getElementById('collectBtn').disabled=true; setTimeout(nextBalloon,1200); } }
+function collectBalloon(){ const rt=Math.round(performance.now()-state.decisionStart); state.totalEarnings += state.currentPotential; state.bartTrials.push({ round:state.currentBalloon, pumps:state.currentPumps, exploded:0, collected:1, round_earnings:Number(state.currentPotential.toFixed(2)), total_earnings_after:Number(state.totalEarnings.toFixed(2)), first_decision_rt_ms:rt, explosion_point:state.balloonExplodeAt }); document.getElementById('earnings').textContent=state.totalEarnings.toFixed(2); document.getElementById('bartMsg').innerHTML='<span class="good">Punkty zostały zapisane.</span>'; document.getElementById('pumpBtn').disabled=true; document.getElementById('collectBtn').disabled=true; setTimeout(nextBalloon,700); }
+function buildSummaryCSV(){ const panasMean=mean(Object.values(state.panas)); const snsMean=mean(Object.values(state.sns)); const adjusted=mean(state.bartTrials.filter(t=>!t.exploded).map(t=>t.pumps)); const avgAll=mean(state.bartTrials.map(t=>t.pumps)); const explosions=state.bartTrials.filter(t=>t.exploded).length; const meanRT=mean(state.bartTrials.map(t=>t.first_decision_rt_ms)); const headers=['participant_id','started_at','condition','age','gender','panas_mean','sns_mean','vas_stress_post_task','bart_total_earnings','bart_total_explosions','bart_avg_pumps_all','bart_adjusted_avg_pumps','bart_mean_rt_ms']; const row=[state.participantId,state.startedAt,state.condition,state.age,state.gender,panasMean.toFixed(2),snsMean.toFixed(2),state.vasStress,state.totalEarnings.toFixed(2),explosions,avgAll.toFixed(2),adjusted.toFixed(2),meanRT.toFixed(0)]; return headers.join(',')+'\n'+row.join(','); }
+function buildTrialsCSV(){ const rows=[]; rows.push(['participant_id','section','trial','stimulus','response','correct_answer','correct','rt_ms','timeout','feedback','round','pumps','exploded','collected','round_earnings','total_earnings_after','explosion_point','risk_rating'].join(',')); state.stressTaskTrials.forEach(t=>rows.push([state.participantId,t.phase,t.trial,`"${t.stimulus}"`,`"${t.response}"`,t.correct_answer,t.correct,t.rt_ms,t.timeout,`"${t.feedback}"`,'','','','','','',''].join(','))); state.bartRiskRatings.forEach(r=>rows.push([state.participantId,'bart_risk_rating','','','','','','','','',r.round,'','','','','','',r.rating].join(','))); state.bartTrials.forEach(t=>rows.push([state.participantId,'bart_round','','','','','','','','',t.round,t.pumps,t.exploded,t.collected,t.round_earnings,t.total_earnings_after,t.explosion_point,''].join(','))); return rows.join('\n'); }
+function renderDebrief(){
+  fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({participantId:state.participantId,summary:buildSummaryCSV(),trials:buildTrialsCSV()})});
+  const adjusted=mean(state.bartTrials.filter(t=>!t.exploded).map(t=>t.pumps));
+  app.innerHTML=`<h2>Dziękujemy za udział!</h2><p>Negatywne komunikaty w warunku stresowym były elementem manipulacji eksperymentalnej i nie stanowiły realnej oceny Twoich zdolności.</p><p><strong>Twój wynik BART:</strong> ${state.totalEarnings.toFixed(2)} punktów. Średnia liczba pompnięć dla niepękniętych balonów: ${adjusted.toFixed(2)}.</p><p class="muted">Twoje odpowiedzi zostały zapisane. Możesz zamknąć tę stronę.</p>`;
 }
-
-function download(filename,content,type='text/plain;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);}
-function mean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;}
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-function renderWelcome(){
-  app.innerHTML = `<span class="pill">Badanie naukowe</span>
-<h1>Wpływ stresu na percepcję prawdopodobieństwa i decyzje</h1>
-<p class="muted">Prosimy o wypełnienie kilku kwestionariuszy i wykonanie dwóch krótkich zadań. Badanie trwa ok. 20–25 minut.</p>
-<div class="row">
-  <div>abel for="age">Wiek</label><input id="age" type="number" min="18" max="99" placeholder="np. 23"></div>
-  <div>abel for="gender">Płeć</label><select id="gender"><option value="">Wybierz</option><option>Kobieta</option><option>Mężczyzna</option><option>Inna</option><option>Nie chcę podawać</option></select></div>
-</div>
-<div class="actions"><button id="startBtn">Rozpocznij</button></div>`;
-  document.getElementById('startBtn').onclick = () => {
-    const age = document.getElementById('age').value.trim();
-    const gender = document.getElementById('gender').value;
-    if(!age || !gender || gender==='Wybierz'){alert('Uzupełnij wiek i płeć.');return;}
-    state.age = age; state.gender = gender;
-        state.participantId = 'P' + Date.now() + '_' + Math.floor(Math.random()*9000+1000);
-    renderPANAS();
-  };
-}
-
-function renderLikertPage(title,items,min,max,nextFn,targetKey,anchors=['Wcale','Bardzo']){
-  app.innerHTML=`<h2>${esc(title)}</h2><p class="muted">Oceń każdą pozycję w skali ${min}–${max}. Wszystkie odpowiedzi są wymagane.</p><div id="questions"></div><div class="actions"><button id="nextBtn">Dalej</button></div>`;
-  const q=document.getElementById('questions');
-  items.forEach((item,idx)=>{
-    const div=document.createElement('div');div.className='question';
-    let radios='';
-    for(let i=min;i<=max;i++) radios+=`abel class="radioBox"><input type="radio" name="q${idx}" value="${i}">${i}</label>`;
-    div.innerHTML=`<div><strong>${idx+1}.</strong> ${esc(item)}</div><div class="small muted" style="margin-top:6px">${anchors[0]} – ${anchors[1]}</div><div class="scale">${radios}</div>`;
-    q.appendChild(div);
-  });
-  document.getElementById('nextBtn').onclick=()=>{
-    const ans={};
-    for(let i=0;i<items.length;i++){
-      const checked=document.querySelector(`input[name="q${i}"]:checked`);
-      if(!checked){alert('Uzupełnij wszystkie odpowiedzi.');return;}
-      ans[items[i]]=Number(checked.value);
-    }
-    state[targetKey]=ans;nextFn();
-  };
-}
-
-function renderPANAS(){renderLikertPage('Skala PANAS',PANAS_ITEMS,1,5,renderSNS,'panas',['Bardzo słabo','Bardzo silnie']);}
-function renderSNS(){renderLikertPage('Skala SNS',SNS_ITEMS,1,6,renderManipulationIntro,'sns',['Nisko','Wysoko']);}
-
-function renderManipulationIntro(){
-  const txt=state.condition==='stres'?'Za chwilę wykonasz krótkie zadanie arytmetyczne
+renderWelcome();
+</script>
+</body>
+</html>
