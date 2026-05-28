@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Eksperyment stres-BART</title>
+//fonts.googleapis.com">
+//fonts.gstatic.com" crossorigin>
+//fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f7f6f2;--surface:#fff;--surface-2:#f3f0ec;--text:#26231d;--muted:#6f6b64;--border:#d9d4cc;--primary:#0b6b72;--primary-2:#0f4d52;--danger:#9a2d3c;--ok:#2f6b3c;--shadow:0 10px 30px rgba(20,20,20,.08);--radius:18px}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:28px}
+h1,h2,h3{margin:0 0 12px;line-height:1.15}
+p{line-height:1.6}
+.muted{color:var(--muted)}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.row>*{flex:1 1 260px}
+label{display:block;font-weight:600;margin:14px 0 8px}
+input[type=text],input[type=number],select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--border);background:#fff;font:inherit}
+button{border:0;border-radius:14px;padding:12px 18px;font:inherit;font-weight:600;cursor:pointer;background:var(--primary);color:#fff}
+button.secondary{background:#ece8e1;color:var(--text)}
+button.danger{background:var(--danger)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:12px;margin-top:24px;flex-wrap:wrap}
+.question{padding:16px 0;border-top:1px solid #eee7df}
+.question:first-child{border-top:0}
+.scale{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+.scale label{margin:0;font-weight:500}
+.radioBox{display:flex;align-items:center;gap:6px;background:var(--surface-2);padding:10px 12px;border-radius:12px}
+.progress{height:12px;background:#e8e2d9;border-radius:999px;overflow:hidden;margin:18px 0 8px}
+.bar{height:100%;width:0;background:linear-gradient(90deg,var(--primary),#5aa8ae)}
+.big{font-size:clamp(28px,5vw,54px);font-weight:700;letter-spacing:-.03em;margin:8px 0 18px}
+.timer{font-size:18px;font-weight:700;color:var(--danger)}
+.feedback{min-height:34px;font-weight:700;margin-top:16px}
+.taskBox{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:240px;background:linear-gradient(180deg,#fdfcf9,#f5f1eb);border:1px solid var(--border);border-radius:18px;padding:24px}
+.sliderWrap{margin:24px 0}
+input[type=range]{width:100%}
+.sliderLabels{display:flex;justify-content:space-between;color:var(--muted);font-size:14px}
+.pill{display:inline-block;padding:6px 10px;border-radius:999px;background:#e8f1f2;color:var(--primary-2);font-size:13px;font-weight:600}
+.bartArea{display:grid;grid-template-columns:1.2fr .8fr;gap:20px;align-items:start}
+.balloonStage{min-height:420px;display:flex;align-items:center;justify-content:center;background:#f9f7f3;border:1px solid var(--border);border-radius:18px;position:relative;overflow:hidden}
+.balloon{width:120px;height:150px;background:#d95865;border-radius:50% 50% 48% 48%;position:relative;transform-origin:center bottom;transition:transform .15s ease;box-shadow:inset -12px -18px 0 rgba(0,0,0,.07)}
+.balloon::after{content:'';position:absolute;left:50%;bottom:-34px;width:2px;height:34px;background:#8a8175;transform:translateX(-50%)}
+.balloon::before{content:'';position:absolute;top:22px;left:24px;width:22px;height:34px;border-radius:50%;background:rgba(255,255,255,.25);transform:rotate(18deg)}
+.pop{background:radial-gradient(circle,#6a1b24 0,#aa3948 30%,transparent 31%);width:180px;height:180px;border-radius:50%}
+.stats{display:grid;gap:12px}
+.stat{padding:14px;background:var(--surface-2);border-radius:14px}
+.bartButtons{display:flex;gap:12px;margin-top:16px;flex-wrap:wrap}
+.small{font-size:14px}
+.good{color:var(--ok)}
+.bad{color:var(--danger)}
+@media(max-width:800px){.bartArea{grid-template-columns:1fr}.wrap{padding:14px}.card{padding:18px}}
+</style>
+</head>
+<body>
+<div class="wrap"><div id="app" class="card"></div></div>
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTkXRn4Z87wKn8Sh0L8oJhAyVQMl2-uhk-PupWxp9uhDx14559tChwBSFWIg_PsUsIPg/exec';
+const app = document.getElementById('app');
+const PANAS_ITEMS = ['Zainteresowany/a','Rozdrażniony/a','Podekscytowany/a','Przygnębiony/a','Silny/a','Winny/a','Przestraszony/a','Wrogi/a','Entuzjastyczny/a','Dumny/a'];
+const SNS_ITEMS = ['Jak dobrze radzisz sobie zwykle z ułamkami?','Jak dobrze radzisz sobie zwykle z procentami?','Jak dobrze radzisz sobie z obliczaniem napiwku lub rabatu?','Na ile wolisz informacje podane liczbowo niż opisowo?','Na ile czujesz się pewnie, interpretując tabele i wykresy?','Jak oceniasz swoją ogólną biegłość numeryczną?'];
+const state = {
+  participantId: 'P' + Date.now() + '_' + Math.floor(Math.random()*9000+1000),
+  age:'', gender:'',
+  condition: Math.random()<0.5 ? 'stres' : 'kontrola',
+  startedAt: new Date().toISOString(),
+  panas:{}, sns:{}, stressTaskTrials:[], vasStress:null,
+  bartTrials:[], bartRiskRatings:[],
+  currentBalloon:0, totalEarnings:0, currentPumps:0,
+  currentPotential:0, balloonExplodeAt:null, decisionStart:null
+};
+
+function saveToServer() {
+  const payload = {
+    participantId: state.participantId,
+    summary: buildSummaryCSV(),
+    trials: buildTrialsCSV()
+  };
+  app.innerHTML = '<h2>Zapisywanie danych...</h2><p>Proszę czekać, nie zamykaj okna.</p>';
+  fetch(SCRIPT_URL, {
+    method:'POST',
+    mode:'no-cors',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  }).then(() => {
+    app.innerHTML = '<h2>Dziękujemy za udział!</h2><p>Twoje odpowiedzi zostały zapisane. Możesz teraz zamknąć tę stronę.</p><p class="muted small">ID sesji: ' + state.participantId + '</p>';
+  }).catch(() => {
+    app.innerHTML = '<h2>Dziękujemy za udział!</h2><p>Twoje odpowiedzi zostały zapisane. Możesz teraz zamknąć tę stronę.</p><p class="muted small">ID sesji: ' + state.participantId + '</p>';
+  });
+}
+
+function download(filename,content,type='text/plain;charset=utf-8'){const blob=new Blob([content],{type});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();URL.revokeObjectURL(a.href);}
+function mean(arr){return arr.length?arr.reduce((a,b)=>a+b,0)/arr.length:0;}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderWelcome(){
+  app.innerHTML = `<span class="pill">Badanie naukowe</span>
+<h1>Wpływ stresu na percepcję prawdopodobieństwa i decyzje</h1>
+<p class="muted">Prosimy o wypełnienie kilku kwestionariuszy i wykonanie dwóch krótkich zadań. Badanie trwa ok. 20–25 minut.</p>
+<div class="row">
+  <div>abel for="age">Wiek</label><input id="age" type="number" min="18" max="99" placeholder="np. 23"></div>
+  <div>abel for="gender">Płeć</label><select id="gender"><option value="">Wybierz</option><option>Kobieta</option><option>Mężczyzna</option><option>Inna</option><option>Nie chcę podawać</option></select></div>
+</div>
+<div class="actions"><button id="startBtn">Rozpocznij</button></div>`;
+  document.getElementById('startBtn').onclick = () => {
+    const age = document.getElementById('age').value.trim();
+    const gender = document.getElementById('gender').value;
+    if(!age || !gender || gender==='Wybierz'){alert('Uzupełnij wiek i płeć.');return;}
+    state.age = age; state.gender = gender;
+    renderPANAS();
+  };
+}
+
+function renderLikertPage(title,items,min,max,nextFn,targetKey,anchors=['Wcale','Bardzo']){
+  app.innerHTML=`<h2>${esc(title)}</h2><p class="muted">Oceń każdą pozycję w skali ${min}–${max}. Wszystkie odpowiedzi są wymagane.</p><div id="questions"></div><div class="actions"><button id="nextBtn">Dalej</button></div>`;
+  const q=document.getElementById('questions');
+  items.forEach((item,idx)=>{
+    const div=document.createElement('div');div.className='question';
+    let radios='';
+    for(let i=min;i<=max;i++) radios+=`abel class="radioBox"><input type="radio" name="q${idx}" value="${i}">${i}</label>`;
+    div.innerHTML=`<div><strong>${idx+1}.</strong> ${esc(item)}</div><div class="small muted" style="margin-top:6px">${anchors[0]} – ${anchors[1]}</div><div class="scale">${radios}</div>`;
+    q.appendChild(div);
+  });
+  document.getElementById('nextBtn').onclick=()=>{
+    const ans={};
+    for(let i=0;i<items.length;i++){
+      const checked=document.querySelector(`input[name="q${i}"]:checked`);
+      if(!checked){alert('Uzupełnij wszystkie odpowiedzi.');return;}
+      ans[items[i]]=Number(checked.value);
+    }
+    state[targetKey]=ans;nextFn();
+  };
+}
+
+function renderPANAS(){renderLikertPage('Skala PANAS',PANAS_ITEMS,1,5,renderSNS,'panas',['Bardzo słabo','Bardzo silnie']);}
+function renderSNS(){renderLikertPage('Skala SNS',SNS_ITEMS,1,6,renderManipulationIntro,'sns',['Nisko','Wysoko']);}
+
+function renderManipulationIntro(){
+  const txt=state.condition==='stres'?'Za chwilę wykonasz krótkie zadanie arytmetyczne
