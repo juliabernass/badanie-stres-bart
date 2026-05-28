@@ -110,6 +110,7 @@ function renderWelcome(){
     const gender = document.getElementById('gender').value;
     if(!age || !gender || gender==='Wybierz'){alert('Uzupełnij wiek i płeć.');return;}
     state.age = age; state.gender = gender;
+        state.participantId = 'P' + Date.now() + '_' + Math.floor(Math.random()*9000+1000);
     renderPANAS();
   };
 }
