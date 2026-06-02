@@ -320,7 +320,7 @@ function nextBalloon(){
   state.currentPumps=0;
   state.currentPotential=0;
   state.balloonExplodeAt=randomInt(1,128);
-  if([1,6,11,16,21,26].includes(state.currentBalloon)) renderRiskRating();
+  if([6,11,16,21,26].includes(state.currentBalloon)) renderRiskRating();
   else renderBartTrial(false);
 }
 
