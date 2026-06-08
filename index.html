@@ -213,7 +213,7 @@ function renderSNS(){
 
 function renderManipulationIntro(){
   const txt=state.condition==='stres' ? 'Za chwilę wykonasz krótkie zadanie arytmetyczne pod presją czasu. Staraj się odpowiadać szybko i dokładnie.' : 'Za chwilę wykonasz krótkie neutralne zadanie porządkowania. Wykonuj je spokojnie i możliwie dokładnie.';
-  app.innerHTML=`<span class="pill">Warunek: ${state.condition}</span><h2>Zadanie wprowadzające</h2><p>${txt}</p><div class="actions"><button id="goManip">Start zadania</button></div>`;
+  app.innerHTML=`<h2>Zadanie wprowadzające</h2><p>${txt}</p><div class="actions"><button id="goManip">Start zadania</button></div>`;
   document.getElementById('goManip').onclick=()=>runManipulation(0);
 }
 
