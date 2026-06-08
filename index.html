@@ -316,11 +316,11 @@ function startBartIntro(){
 
 function nextBalloon(){
   state.currentBalloon += 1;
-  if(state.currentBalloon>30){ renderDebrief(); return; }
+  if(state.currentBalloon>10){ renderDebrief(); return; }
   state.currentPumps=0;
   state.currentPotential=0;
   state.balloonExplodeAt=randomInt(1,128);
-  if([6,11,16,21,26].includes(state.currentBalloon)) renderRiskRating();
+  if(state.currentBalloon > 1) renderRiskRating();
   else renderBartTrial(false);
 }
 
@@ -360,7 +360,7 @@ function renderBartTrial(hadRiskRating){
   state.decisionStart=performance.now();
   const scale=1+state.currentPumps*0.03;
   app.innerHTML=`<div class="bartArea"><div>
-    <h2>Balon ${state.currentBalloon} / 30</h2>
+    <h2>Balon ${state.currentBalloon} / 10</h2>
     <div class="balloonStage"><div id="balloonShape" class="balloon" style="transform: scale(${scale})"></div></div>
     <div class="bartButtons">
       <button id="pumpBtn">Pompuj</button>
