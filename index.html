@@ -297,16 +297,16 @@ function startBartIntro(){
     <p>Za chwilę rozpoczniesz główne zadanie eksperymentu. Przeczytaj uważnie poniższe instrukcje.</p>
     <div style="background:#f0f4f8;border-radius:14px;padding:20px 24px;margin:16px 0;border-left:4px solid var(--primary)">
       <h3 style="margin:0 0 10px">Na czym polega zadanie?</h3>
-      <p style="margin:0 0 10px">Przed Tobą <strong>30 balonów</strong>. W każdej rundzie masz dwie opcje:</p>
+      <p style="margin:0 0 10px">Przed Tobą <strong>10 balonów</strong>. W każdej rundzie masz dwie opcje:</p>
       <ul style="margin:0 0 10px;padding-left:20px">
         <li><strong>Pompuj</strong> – każde pompnięcie zwiększa Twój potencjalny zysk o 0,05 pkt, ale też zwiększa ryzyko, że balon pęknie.</li>
         <li><strong>Zbierz punkty</strong> – kończysz rundę i zabierasz zgromadzone punkty na swoje konto. To bezpieczna opcja.</li>
       </ul>
       <p style="margin:0 0 10px"><strong>Jeśli balon pęknie</strong> – tracisz wszystkie punkty z tej rundy i przechodzisz do następnej.</p>
-      <p style="margin:0"><strong>Cel:</strong> Zgromadź jak najwięcej punktów przez wszystkie 30 rund.</p>
+      <p style="margin:0"><strong>Cel:</strong> Zgromadź jak najwięcej punktów przez wszystkie 10 rund.</p>
     </div>
     <div style="background:#fff8e1;border-radius:14px;padding:16px 20px;margin:16px 0;border-left:4px solid #f9a825">
-      <p style="margin:0"><strong>Ważne:</strong> W wybranych rundach, zanim zaczniesz pompować, zostaniesz poproszony/a o ocenę ryzyka związanego z całą rundą. Następnie w każdej rundzie przed każdym kolejnym pompnięciem będziesz mógł/mogła zdecydować, czy chcesz kontynuować, czy zebrać punkty.</p>
+      <p style="margin:0"><strong>Ważne:</strong> Przed każdą rundą (oprócz pierwszej) zostaniesz poproszony/a o ocenę ryzyka związanego z pompowaniem balonu w tej rundzie.</p>
     </div>
     <p class="muted">Nie ma jednej prawidłowej strategii – postępuj tak, jak uważasz za słuszne.</p>
     <div class="actions"><button id="startBart">Rozumiem – rozpocznij zadanie</button></div>
@@ -372,7 +372,7 @@ function renderBartTrial(hadRiskRating){
     <div class="stat"><strong>Aktualna runda</strong><br>Potencjalny zysk: <span id="potential">${state.currentPotential.toFixed(2)}</span></div>
     <div class="stat"><strong>Pompnięcia</strong><br><span id="pumps">${state.currentPumps}</span></div>
     <div class="stat"><strong>Suma punktów</strong><br><span id="earnings">${state.totalEarnings.toFixed(2)}</span></div>
-    <div class="stat"><strong>Ocena ryzyka</strong><br>${hadRiskRating ? 'zebrana przed rundą' : 'brak w tej rundzie'}</div>
+
   </div></div>`;
 
   document.getElementById('pumpBtn').onclick=pumpBalloon;
